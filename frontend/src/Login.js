@@ -1,54 +1,42 @@
-const login = async (data) => {
-  try {
-    const res = await axios.post(`${API}/api/auth/login`, data);
-    localStorage.setItem("token", res.data.token);
-    alert("Login successful");
-  } catch (err) {
-    alert(err.response?.data?.message || "Login failed");
-  }
-};
-    
-  
+import React, { useState } from "react";
+import API from "./api";
+
+function Login() {
+  const [form, setForm] = useState({
+    email: "",
+    password: ""
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await API.post("/auth/login", form);
+      localStorage.setItem("token", res.data.token);
+      alert("Login successful");
+    } catch (err) {
+      alert(err.response?.data?.message || "Login failed");
+    }
+  };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>Login</h2>
-
-        <input
-          type="email"
-          placeholder="Email"
-          value={data.email}
-          onChange={(e) =>
-            setData({ ...data, email: e.target.value })
-          }
-          style={styles.input}
-        />
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={data.password}
-          onChange={(e) =>
-            setData({ ...data, password: e.target.value })
-          }
-          style={styles.input}
-        />
-
-        <button onClick={login} style={styles.button}>
-          Login
-        </button>
-
-        {/* ✅ SIGNUP LINK (IMPORTANT FIX) */}
-        <p style={styles.linkText}>
-          Don’t have an account?{" "}
-          <Link to="/signup" style={styles.link}>
-            Signup
-          </Link>
-        </p>
-      </div>
+    <div>
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <input name="email" placeholder="Email" onChange={handleChange} />
+        <input name="password" type="password" placeholder="Password" onChange={handleChange} />
+        <button type="submit">Login</button>
+      </form>
     </div>
   );
+}
+
+export default Login;
+
+       
 
 
 const styles = {

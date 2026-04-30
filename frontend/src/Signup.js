@@ -1,47 +1,41 @@
-import axios from "axios";
+import React, { useState } from "react";
+import API from "./api";
 
-const API = process.env.REACT_APP_API_URL;
+function Signup() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
 
-const signup = async (data) => {
-  try {
-    const res = await axios.post(`${API}/api/auth/signup`, data);
-    alert(res.data.message);
-  } catch (err) {
-    console.log(err.response?.data);
-    alert(err.response?.data?.message || "Signup failed");
-  }
-};
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await API.post("/auth/signup", form);
+      alert(res.data.message);
+    } catch (err) {
+      alert(err.response?.data?.message || "Signup failed");
+    }
+  };
+
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2>Signup</h2>
-
-        <input placeholder="Name"
-          onChange={e => setData({ ...data, name: e.target.value })}
-          style={styles.input}
-        />
-
-        <input placeholder="Email"
-          onChange={e => setData({ ...data, email: e.target.value })}
-          style={styles.input}
-        />
-
-        <input type="password" placeholder="Password"
-          onChange={e => setData({ ...data, password: e.target.value })}
-          style={styles.input}
-        />
-
-        <button onClick={signup} style={styles.button}>
-          Signup
-        </button>
-
-        <p>
-          Already have account? <Link to="/">Login</Link>
-        </p>
-      </div>
+    <div>
+      <h2>Signup</h2>
+      <form onSubmit={handleSubmit}>
+        <input name="name" placeholder="Name" onChange={handleChange} />
+        <input name="email" placeholder="Email" onChange={handleChange} />
+        <input name="password" type="password" placeholder="Password" onChange={handleChange} />
+        <button type="submit">Signup</button>
+      </form>
     </div>
   );
+}
 
+export default Signup;
 
 const styles = {
   container: {
