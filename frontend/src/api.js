@@ -1,6 +1,7 @@
 import axios from "axios";
 
-export const API = axios.create({
-REACT_APP_API_URL=https://team-task-managers-production.up.railway.app
+const API = axios.create({
+  baseURL: process.env.REACT_APP_API_URL + "/api"
 });
-export default API; 
+
+export default API;
