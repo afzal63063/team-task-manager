@@ -1,49 +1,64 @@
-const router = require("express").Router();
-const User = require("../models/User");
+const express = require("express");
+const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+const User = require("../models/User");
 const auth = require("../middleware/auth");
 
-// signup
+// ================= SIGNUP =================
 router.post("/signup", async (req, res) => {
-  const { name, email, password } = req.body;
+  try {
+    const { name, email, password, role } = req.body;
 
-  const exist = await User.findOne({ email });
-  if (exist) return res.status(400).send("User exists");
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).send("User already exists");
 
-  const hash = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = new User({
-    name,
-    email,
-    password: hash,
-    role: "Admin"
-  });
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+    });
 
-  await user.save();
-  res.send("Registered");
+    await user.save();
+
+    res.send("Registered successfully");
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
-// login
+// ================= LOGIN =================
 router.post("/login", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
-  if (!user) return res.status(400).send("Not found");
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) return res.status(400).send("User not found");
 
-  const valid = await bcrypt.compare(req.body.password, user.password);
-  if (!valid) return res.status(400).send("Wrong password");
+    const valid = await bcrypt.compare(req.body.password, user.password);
+    if (!valid) return res.status(400).send("Wrong password");
 
-  const token = jwt.sign(
-    { id: user._id, role: user.role },
-    process.env.JWT_SECRET
-  );
+    const token = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET
+    );
 
-  res.json({ token });
+    res.json({ token });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
-// get users
+// ================= GET USERS =================
 router.get("/users", auth, async (req, res) => {
-  const users = await User.find().select("_id name role");
-  res.send(users);
+  try {
+    const users = await User.find().select("_id name role");
+    res.send(users);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 module.exports = router;
