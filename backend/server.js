@@ -19,7 +19,7 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/tasks", require("./routes/taskRoutes"));
 app.use("/api/projects", require("./routes/projectRoutes"));
 
-// ✅ SERVE FRONTEND
+
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
 app.get("*", (req, res) => {
