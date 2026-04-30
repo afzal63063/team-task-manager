@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import API from "./api";
 
 export default function Dashboard() {
@@ -15,26 +15,26 @@ export default function Dashboard() {
   const [selectedProject, setSelectedProject] = useState("");
 
   
-  const fetchAll = async () => {
-    try {
-      const p = await API.get("/projects", {
-        headers: { Authorization: token }
-      });
-      setProjects(p.data);
+ const fetchAll = useCallback(async () => {
+  try {
+    const p = await API.get("/projects", {
+      headers: { Authorization: token }
+    });
+    setProjects(p.data);
 
-      const t = await API.get("/tasks", {
-        headers: { Authorization: token }
-      });
-      setTasks(t.data);
+    const t = await API.get("/tasks", {
+      headers: { Authorization: token }
+    });
+    setTasks(t.data);
 
-      const u = await API.get("/auth/users", {
-        headers: { Authorization: token }
-      });
-      setUsers(u.data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    const u = await API.get("/auth/users", {
+      headers: { Authorization: token }
+    });
+    setUsers(u.data);
+  } catch (err) {
+    console.log(err);
+  }
+}, [token]);
 
  useEffect(() => {
   fetchAll();
@@ -259,7 +259,7 @@ export default function Dashboard() {
   );
 }
 
-// ✅ CLEAN PROFESSIONAL UI
+
 const styles = {
   container: {
     maxWidth: "800px",
