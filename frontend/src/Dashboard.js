@@ -43,8 +43,23 @@ export default function Dashboard() {
       fetchAll();
     } catch (err) {
       alert("Error adding project");
+
     }
   };
+  <h3>Projects</h3>
+
+{projects.map((p) => (
+  <div key={p._id} style={{ margin: "10px 0" }}>
+    {p.name}
+
+    <button
+      onClick={() => deleteProject(p._id)}
+      style={{ marginLeft: "10px", background: "red", color: "white" }}
+    >
+      Delete
+    </button>
+  </div>
+))}
 
   //  ADD TASK
   const addTask = async () => {
