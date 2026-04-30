@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate(); // important
 
   const handleLogin = async () => {
     try {
@@ -16,7 +19,11 @@ const Login = () => {
       );
 
       localStorage.setItem("token", res.data.token);
+
       alert("Login successful");
+
+      navigate("/dashboard"); //  redirect here
+
     } catch (err) {
       console.log(err.response?.data || err.message);
       alert(err.response?.data?.message || "Login failed");
@@ -45,12 +52,9 @@ const Login = () => {
 
       <button onClick={handleLogin}>Login</button>
 
-      {/* Signup link added */}
       <p style={{ marginTop: "20px" }}>
         Don’t have an account?{" "}
-        <a href="/signup" style={{ color: "blue", fontWeight: "bold" }}>
-          Signup
-        </a>
+        <a href="/signup">Signup</a>
       </p>
     </div>
   );
