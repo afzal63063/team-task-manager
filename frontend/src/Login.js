@@ -1,32 +1,26 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import API from "./api";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate(); // important
-
   const handleLogin = async () => {
     try {
-      const res = await axios.post(
-        "https://team-task-managers-production.up.railway.app/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const res = await API.post("/auth/login", {
+        email,
+        password,
+      });
 
       localStorage.setItem("token", res.data.token);
 
       alert("Login successful");
-
-      navigate("/dashboard"); //  redirect here
-
+      navigate("/dashboard");
     } catch (err) {
-      console.log(err.response?.data || err.message);
-      alert(err.response?.data?.message || "Login failed");
+      alert(err.response?.data || "Login failed");
     }
   };
 
@@ -35,9 +29,7 @@ const Login = () => {
       <h2>Login</h2>
 
       <input
-        type="email"
         placeholder="Email"
-        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <br /><br />
@@ -45,16 +37,20 @@ const Login = () => {
       <input
         type="password"
         placeholder="Password"
-        value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       <br /><br />
 
       <button onClick={handleLogin}>Login</button>
 
-      <p style={{ marginTop: "20px" }}>
+      <p>
         Don’t have an account?{" "}
-        <a href="/signup">Signup</a>
+        <span
+          onClick={() => navigate("/signup")}
+          style={{ color: "blue", cursor: "pointer" }}
+        >
+          Signup
+        </span>
       </p>
     </div>
   );
