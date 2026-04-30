@@ -4,7 +4,7 @@ const API = axios.create({
   baseURL: "https://team-task-managers-production.up.railway.app/api",
 });
 
-//  ADD THIS
+// VERY IMPORTANT
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
 

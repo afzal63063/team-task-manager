@@ -34,17 +34,28 @@ export default function Dashboard() {
 
   //  ADD PROJECT
   const addProject = async () => {
-    try {
-      if (!projectName) return alert("Enter project name");
-
-      await API.post("/projects", { name: projectName });
-
-      setProjectName("");
-      fetchAll();
-    } catch (err) {
-      alert("Error adding project");
+  try {
+    if (!projectName.trim()) {
+      return alert("Enter project name");
     }
-  };
+
+    const res = await API.post("/projects", {
+      name: projectName,   // ⚠ must match backend
+    });
+
+    console.log("SUCCESS:", res.data);
+
+    alert("Project added successfully");
+
+    setProjectName("");
+    fetchAll();
+
+  } catch (err) {
+    console.log("ERROR:", err.response?.data || err.message);
+
+    alert(err.response?.data?.message || "Error adding project");
+  }
+};
 
   //  ADD TASK
   const addTask = async () => {
