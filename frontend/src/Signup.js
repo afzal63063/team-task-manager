@@ -37,32 +37,3 @@ function Signup() {
 
 export default Signup;
 
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-    background: "#f4f6f9"
-  },
-  card: {
-    background: "white",
-    padding: "30px",
-    borderRadius: "10px",
-    width: "300px",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)"
-  },
-  input: {
-    width: "100%",
-    margin: "10px 0",
-    padding: "10px"
-  },
-  button: {
-    width: "100%",
-    padding: "10px",
-    background: "green",
-    color: "white",
-    border: "none",
-    borderRadius: "5px"
-  }
-};
