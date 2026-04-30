@@ -1,21 +1,16 @@
-import { useState } from "react";
-import { API } from "./api";
-import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
-export default function Signup() {
-  const [data, setData] = useState({});
-  const nav = useNavigate();
+const API = process.env.REACT_APP_API_URL;
 
-  const signup = async () => {
-    try {
-      await API.post("/auth/signup", data);
-      alert("Signup successful");
-      nav("/");
-    } catch {
-      alert("Signup failed");
-    }
-  };
-
+const signup = async (data) => {
+  try {
+    const res = await axios.post(`${API}/api/auth/signup`, data);
+    alert(res.data.message);
+  } catch (err) {
+    console.log(err.response?.data);
+    alert(err.response?.data?.message || "Signup failed");
+  }
+};
   return (
     <div style={styles.container}>
       <div style={styles.card}>
@@ -46,7 +41,7 @@ export default function Signup() {
       </div>
     </div>
   );
-}
+
 
 const styles = {
   container: {

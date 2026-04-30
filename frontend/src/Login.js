@@ -1,26 +1,14 @@
-import { useState } from "react";
-import { API } from "./api";
-import { useNavigate, Link } from "react-router-dom";
-
-export default function Login() {
-  const [data, setData] = useState({
-    email: "",
-    password: ""
-  });
-
-  const nav = useNavigate();
-
-  const login = async () => {
-    try {
-      const res = await API.post("/auth/login", data);
-
-      localStorage.setItem("token", res.data.token);
-
-      nav("/dashboard");
-    } catch (err) {
-      alert("Login failed");
-    }
-  };
+const login = async (data) => {
+  try {
+    const res = await axios.post(`${API}/api/auth/login`, data);
+    localStorage.setItem("token", res.data.token);
+    alert("Login successful");
+  } catch (err) {
+    alert(err.response?.data?.message || "Login failed");
+  }
+};
+    
+  
 
   return (
     <div style={styles.container}>
@@ -61,7 +49,7 @@ export default function Login() {
       </div>
     </div>
   );
-}
+
 
 const styles = {
   container: {
