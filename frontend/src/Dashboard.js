@@ -36,9 +36,9 @@ export default function Dashboard() {
     }
   };
 
-  useEffect(() => {
-    fetchAll();
-  }, []);
+ useEffect(() => {
+  fetchAll();
+}, [fetchAll]);
 
   
   const addProject = async () => {
