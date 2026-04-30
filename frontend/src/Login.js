@@ -44,6 +44,14 @@ const Login = () => {
       <br /><br />
 
       <button onClick={handleLogin}>Login</button>
+
+      {/* Signup link added */}
+      <p style={{ marginTop: "20px" }}>
+        Don’t have an account?{" "}
+        <a href="/signup" style={{ color: "blue", fontWeight: "bold" }}>
+          Signup
+        </a>
+      </p>
     </div>
   );
 };
