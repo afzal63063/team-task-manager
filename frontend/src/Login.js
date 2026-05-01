@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import API from "./api";
+import { useNavigate } from "react-router-dom";
 
-const Login = () => {
-  const navigate = useNavigate();
-
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
@@ -19,8 +18,9 @@ const Login = () => {
 
       alert("Login successful");
       navigate("/dashboard");
+
     } catch (err) {
-      alert(err.response?.data || "Login failed");
+      alert(err.response?.data?.message || "Login failed");
     }
   };
 
@@ -29,6 +29,7 @@ const Login = () => {
       <h2>Login</h2>
 
       <input
+        type="email"
         placeholder="Email"
         onChange={(e) => setEmail(e.target.value)}
       />
@@ -45,15 +46,8 @@ const Login = () => {
 
       <p>
         Don’t have an account?{" "}
-        <span
-          onClick={() => navigate("/signup")}
-          style={{ color: "blue", cursor: "pointer" }}
-        >
-          Signup
-        </span>
+        <a href="/signup">Signup</a>
       </p>
     </div>
   );
-};
-
-export default Login;
+}

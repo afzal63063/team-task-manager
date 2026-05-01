@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import API from "./api";
+import { useNavigate } from "react-router-dom";
 
-const Signup = () => {
-  const navigate = useNavigate();
-
+export default function Signup() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSignup = async () => {
     try {
@@ -19,8 +18,9 @@ const Signup = () => {
 
       alert("Signup successful");
       navigate("/");
+
     } catch (err) {
-      alert("Signup failed");
+      alert(err.response?.data?.message || "Signup failed");
     }
   };
 
@@ -34,16 +34,10 @@ const Signup = () => {
       <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
       <br /><br />
 
-      <input
-        type="password"
-        placeholder="Password"
-        onChange={(e) => setPassword(e.target.value)}
-      />
+      <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
       <br /><br />
 
       <button onClick={handleSignup}>Signup</button>
     </div>
   );
-};
-
-export default Signup;
+}
