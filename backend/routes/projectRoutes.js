@@ -3,23 +3,25 @@ const Project = require("../models/Project");
 const auth = require("../middleware/auth");
 
 router.post("/", auth, async (req, res) => {
-  if (req.user.role !== "Admin")
-    return res.status(403).send("Only admin");
+  try {
+    const project = new Project({
+      name: req.body.name,
+      createdBy: req.user.id
+    });
 
-  const project = new Project({
-    name: req.body.name,
-    createdBy: req.user.id
-  });
+    await project.save();
+    res.send(project);
 
-  await project.save();
-  res.send(project);
+  } catch (err) {
+    res.status(500).send("Error creating project");
+  }
 });
-
 
 router.get("/", auth, async (req, res) => {
   const projects = await Project.find();
   res.send(projects);
 });
+
 router.delete("/:id", async (req, res) => {
   try {
     await Project.findByIdAndDelete(req.params.id);
@@ -28,4 +30,5 @@ router.delete("/:id", async (req, res) => {
     res.status(500).send("Delete failed");
   }
 });
+
 module.exports = router;
