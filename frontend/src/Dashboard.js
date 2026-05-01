@@ -12,6 +12,9 @@ export default function Dashboard() {
   const [dueDate, setDueDate] = useState("");
   const [selectedProject, setSelectedProject] = useState("");
 
+  const role = localStorage.getItem("role");
+
+  // 🔄 Fetch all data
   const fetchAll = async () => {
     try {
       const p = await API.get("/projects");
@@ -31,24 +34,27 @@ export default function Dashboard() {
     fetchAll();
   }, []);
 
-  // ADD PROJECT
+  // ➕ Add Project
   const addProject = async () => {
     try {
-      if (!projectName) return alert("Enter project name");
+      if (!projectName.trim()) return alert("Enter project name");
 
       await API.post("/projects", { name: projectName });
 
       setProjectName("");
       fetchAll();
     } catch (err) {
-      alert("Error adding project");
+      console.log(err.response?.data);
+      alert(err.response?.data?.message || "Error adding project");
     }
   };
 
-  // ADD TASK
+  // ➕ Add Task
   const addTask = async () => {
     try {
-      if (!title) return alert("Enter task");
+      if (!title.trim()) return alert("Enter task");
+      if (!selectedProject) return alert("Select project");
+      if (!assignedTo) return alert("Assign user");
 
       await API.post("/tasks", {
         title,
@@ -64,66 +70,127 @@ export default function Dashboard() {
 
       fetchAll();
     } catch (err) {
-      alert("Error adding task");
+      console.log(err.response?.data);
+      alert(err.response?.data?.message || "Error adding task");
     }
   };
 
+  // 🚪 Logout
+  const logout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
+
   return (
-    <div style={{ padding: "40px" }}>
+    <div
+      style={{
+        maxWidth: "700px",
+        margin: "auto",
+        padding: "30px",
+        background: "#f9f9f9",
+        borderRadius: "10px",
+        boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+        marginTop: "40px",
+      }}
+    >
+      {/* LOGOUT */}
+      <button
+        onClick={logout}
+        style={{
+          float: "right",
+          background: "red",
+          color: "white",
+          border: "none",
+          padding: "6px 12px",
+          cursor: "pointer",
+        }}
+      >
+        Logout
+      </button>
+
       <h1>Team Task Manager</h1>
 
-      <h3>Create Project</h3>
-      <input
-        value={projectName}
-        onChange={(e) => setProjectName(e.target.value)}
-      />
-      <button onClick={addProject}>Add</button>
+      {/* ADMIN ONLY */}
+      {role === "Admin" && (
+        <>
+          <h3>Create Project</h3>
+          <input
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            placeholder="Project name"
+          />
+          <button onClick={addProject}>Add</button>
+        </>
+      )}
 
+      {/* PROJECT LIST */}
       <h3>Projects</h3>
-      {projects.map((p) => (
-        <div key={p._id}>{p.name}</div>
-      ))}
+      {projects.length === 0 ? (
+        <p>No projects found</p>
+      ) : (
+        projects.map((p) => (
+          <div key={p._id} style={{ marginBottom: "5px" }}>
+            • {p.name}
+          </div>
+        ))
+      )}
 
+      {/* TASK CREATE */}
       <h3>Create Task</h3>
 
       <input
-        placeholder="Task"
+        placeholder="Task title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
       />
+      <br /><br />
 
       <input
         type="date"
         value={dueDate}
         onChange={(e) => setDueDate(e.target.value)}
       />
+      <br /><br />
 
-      <select onChange={(e) => setSelectedProject(e.target.value)}>
-        <option>Select Project</option>
+      <select
+        value={selectedProject}
+        onChange={(e) => setSelectedProject(e.target.value)}
+      >
+        <option value="">Select Project</option>
         {projects.map((p) => (
           <option key={p._id} value={p._id}>
             {p.name}
           </option>
         ))}
       </select>
+      <br /><br />
 
-      <select onChange={(e) => setAssignedTo(e.target.value)}>
-        <option>Assign User</option>
+      <select
+        value={assignedTo}
+        onChange={(e) => setAssignedTo(e.target.value)}
+      >
+        <option value="">Assign User</option>
         {users.map((u) => (
           <option key={u._id} value={u._id}>
             {u.name}
           </option>
         ))}
       </select>
+      <br /><br />
 
       <button onClick={addTask}>Add Task</button>
 
+      {/* TASK LIST */}
       <h3>Tasks</h3>
-      {tasks.map((t) => (
-        <div key={t._id}>
-          {t.title} - {t.status}
-        </div>
-      ))}
+      {tasks.length === 0 ? (
+        <p>No tasks found</p>
+      ) : (
+        tasks.map((t) => (
+          <div key={t._id} style={{ marginBottom: "5px" }}>
+            • {t.title} - {t.status}
+          </div>
+        ))
+      )}
     </div>
   );
 }
