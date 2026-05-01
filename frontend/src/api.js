@@ -1,18 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://team-task-managers-production.up.railway.app/api",
-});
-
-//  Attach token automatically
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem("token");
-
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
-
-  return req;
+  baseURL: "https://teamtaskmanager.up.railway.app/api" 
 });
 
 export default API;
